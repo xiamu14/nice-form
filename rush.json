@@ -451,6 +451,10 @@
     {
       "packageName": "example",
       "projectFolder": "example"
+    },
+    {
+      "packageName": "react-form-zero",
+      "projectFolder": "core"
     }
   ]
 }

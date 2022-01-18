@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import PubSub from "pubsub-js";
 
-export function useForm() {
+export default function useForm() {
   const valuesRef = useRef<any>(undefined);
   const errorsRef = useRef<any>();
   const rulesRef = useRef<{ [k: string]: any[] }>();

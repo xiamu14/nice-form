@@ -1,8 +1,6 @@
 import React, { memo, useEffect } from "react";
 import "./App.css";
-import Field from "./Field";
-import Form from "./Form";
-import { useForm } from "./useForm";
+import { Field, Form, useForm } from "react-form-zero";
 
 const Input = memo(
   ({
