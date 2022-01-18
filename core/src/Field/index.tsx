@@ -6,20 +6,20 @@ import React, {
   useRef,
 } from "react";
 import FormContext from "../context";
-import PubSub from "pubsub-js";
-
-const watcher = { name: "" };
+import pubSub from "../pub-sub";
 
 interface Props {
+  name: string;
   rules?: any[];
 }
 
 const Field = (props: React.PropsWithChildren<Props>) => {
-  const { children, rules } = props;
+  const { children, name, rules } = props;
   const [value, setValue] = useState<any>("");
   const [error, setError] = useState<string>();
-  const [name, setName] = useState<string>();
-  const onceRef = useRef<boolean>(false);
+
+  const keyRef = useRef(name);
+
   const mountedRef = useRef<boolean>(false);
   const context = useContext(FormContext);
 
@@ -27,32 +27,17 @@ const Field = (props: React.PropsWithChildren<Props>) => {
     mountedRef.current = true;
   }, []);
 
-  //   FIXME: 似乎勉强可以使用；但看起来不是很常规啊
-  //   NOTE: useEffect 里包裹后，defineProperty 劫持失败
-  //   useEffect(() => {
-  if (!mountedRef.current) {
-    Object.defineProperty(watcher, "name", {
-      set(value) {
-        if (!onceRef.current) {
-          setName(value);
-          onceRef.current = true;
-        }
-      },
-    });
-  }
-  //   }, []);
-
   const handleChange = (name: string, event: InputEvent | any) => {
     const value = event.target.value;
     setValue(value);
-    PubSub.publish("change", { [name]: value });
+    pubSub.publish("change", { [name]: value });
   };
 
   const verify = useCallback(
     (name: string) => {
-      console.log("debug rules", rules);
+      console.log("debug rules", name, rules);
       if (rules) {
-        console.log("debug rule", rules);
+        console.log("debug rule", name, rules);
         setError("请输入xxx");
       }
     },
@@ -60,67 +45,68 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   );
 
   useEffect(() => {
-    PubSub.subscribe("reset", () => {
+    pubSub.subscribe("reset", () => {
       setValue("");
       setError(undefined);
     });
+    pubSub.subscribe(`set-${keyRef.current}`, (fieldState) => {
+      console.log("debug", fieldState);
+      // TODO: 这里执行具体的联动逻辑
+      if ("value" in fieldState) {
+        console.log(
+          "%c effect set",
+          "background: #69c0ff; color: white; padding: 4px",
+          fieldState
+        );
+
+        setValue(fieldState.value);
+      }
+    });
     () => {
-      PubSub.clearAllSubscriptions();
+      pubSub.clearAllSubscriptions();
     };
   }, []);
 
   useEffect(() => {
-    if (name) {
-      PubSub.subscribe(`set-${name}`, (_, fieldState) => {
-        console.log("debug", fieldState);
-        // TODO: 这里执行具体的联动逻辑
-        if ("value" in fieldState) {
-          setValue(fieldState.value);
-        }
-      });
-    }
-  }, [name]);
+    pubSub.publish("change", { [name]: value });
+    pubSub.publish(`on-${keyRef.current}`, { value });
+  }, [value]);
 
   useEffect(() => {
-    if (name) {
-      console.log("debug onEffect", name, value);
-      PubSub.publish(`on-${name}`, { value });
+    if (context && rules) {
+      context.setFieldRules({ [keyRef.current]: rules });
     }
-  }, [name, value]);
-
-  useEffect(() => {
-    if (name && context && rules) {
-      context.setFieldRules({ name: rules });
-    }
-  }, [name, context, rules]);
+  }, [context, rules]);
 
   const bind = useCallback(
     (child: React.ReactNode) => {
       if (!React.isValidElement(child)) {
         return null;
       }
-      // NOTE: 判断子组件的 props 里 name 字段
-      const name = child.props.name;
-      console.log("debug name", name);
-      if (name) {
-        watcher.name = name;
-        const childProps = {
-          ...child.props,
-          ...{
-            value,
-            error, // 校验结果
-            onChange: (event: any) => {
-              handleChange(name, event);
-            },
-            onBlur: () => {
-              console.log("debug blur");
-              verify(name);
-            },
+
+      // console.log(child.props);
+
+      console.log(
+        "%c debug child.props",
+        "background: #69c0ff; color: white; padding: 4px",
+        child.props
+      );
+
+      const childProps = {
+        ...child.props,
+        ...{
+          value,
+          error, // 校验结果
+          onChange: (event: any) => {
+            handleChange(keyRef.current, event);
           },
-        };
-        return React.cloneElement(child, childProps);
-      }
-      return React.cloneElement(child);
+          onBlur: () => {
+            console.log("debug blur");
+            verify(keyRef.current);
+          },
+        },
+      };
+      return React.cloneElement(child, childProps);
     },
     [value, error, handleChange, verify]
   );

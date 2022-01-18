@@ -6,6 +6,7 @@ specifiers:
   '@types/pubsub-js': ^1.8.3
   '@types/react-dom': ^17.0.10
   '@vitejs/plugin-react': ^1.0.7
+  onfire.js: ^2.0.1
   pubsub-js: ^1.9.4
   react: ^17.0.2
   react-dom: ^17.0.2
@@ -18,6 +19,7 @@ dependencies:
   '@types/pubsub-js': 1.8.3
   '@types/react-dom': 17.0.11
   '@vitejs/plugin-react': 1.1.4
+  onfire.js: 2.0.1
   pubsub-js: 1.9.4
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -702,6 +704,10 @@ packages:
       wrappy: 1.0.2
     dev: false
 
+  /onfire.js/2.0.1:
+    resolution: {integrity: sha512-Fwl7tXwnzBSwedaJkF3Zx1KKcGyQvpPw8Y8mTu7ZLE+6TMFv2W5TONW3DwDejp8vivXZSlb7dxjlld2jT1YW8Q==}
+    dev: false
+
   /path-is-absolute/1.0.1:
     resolution: {integrity: sha1-F0uSaHNVNP+8es5r9TpanhtcX18=}
     engines: {node: '>=0.10.0'}
@@ -859,7 +865,7 @@ packages:
     dev: false
 
   file:projects/example.tgz:
-    resolution: {integrity: sha512-A5PoE9OTCCBKHtX3tAvhOHTkBotppaCw2QgZG+KY9IlaQjb5sAXHLl2Vt9COaL2mFkrKpRJYCSWIzR2Aqo9BDA==, tarball: file:projects/example.tgz}
+    resolution: {integrity: sha512-1IMTz638cH52GbhqWFB+PHLMtIUBQ5Brgdu2We7+5kyU/4ywlNvkNsbUK73ZkmIV8cf+126WsuZ/5i1+nnmAlw==, tarball: file:projects/example.tgz}
     name: '@rush-temp/example'
     version: 0.0.0
     dependencies:
@@ -880,12 +886,13 @@ packages:
     dev: false
 
   file:projects/react-form-zero.tgz:
-    resolution: {integrity: sha512-bu59TUIQFLCdqJG556zaG0K3lbW5uGgueL9T33esoP+gItyRt8SXl9mQ73ZoToZzPR2k9EVVnCV2xNdsBEVNTg==, tarball: file:projects/react-form-zero.tgz}
+    resolution: {integrity: sha512-NKV76sFjvVMGZeTOqbtZc088sZILc86gCfKk40rdzPc2Avl4TDUOEEnZ6AMY+ZUkYKpe5TwK7YY+cyolV2C2cQ==, tarball: file:projects/react-form-zero.tgz}
     name: '@rush-temp/react-form-zero'
     version: 0.0.0
     dependencies:
       '@types/pubsub-js': 1.8.3
       '@types/react': 17.0.38
+      onfire.js: 2.0.1
       pubsub-js: 1.9.4
       react: 17.0.2
       rimraf: 3.0.2

@@ -1,29 +1,34 @@
 import { useCallback, useEffect, useRef } from "react";
-import PubSub from "pubsub-js";
+import pubSub from "./pub-sub";
 
 export default function useForm() {
   const valuesRef = useRef<any>(undefined);
   const errorsRef = useRef<any>();
   const rulesRef = useRef<{ [k: string]: any[] }>();
   useEffect(() => {
-    PubSub.subscribe("change", (_, field) => {
+    pubSub.subscribe("change", (field) => {
+      console.log(
+        "%c change",
+        "color:white;background: rgb(83,143,204);padding:4px",
+        field
+      );
       // NOTE: 存储值
       valuesRef.current = { ...(valuesRef.current || {}), ...field };
     });
-    PubSub.subscribe("verify", (_, error) => {
+    pubSub.subscribe("verify", (error) => {
       errorsRef.current = { ...(errorsRef.current || {}), ...error };
     });
     () => {
-      PubSub.clearAllSubscriptions();
+      pubSub.clearAllSubscriptions();
     };
   }, []);
 
   const on = useCallback((name: string, callback) => {
-    PubSub.subscribe(`on-${name}`, (_, data) => callback(data));
+    pubSub.subscribe(`on-${name}`, (data) => callback(data));
   }, []);
 
   const set = useCallback((name, fieldState) => {
-    PubSub.publish(`set-${name}`, fieldState);
+    pubSub.publish(`set-${name}`, fieldState);
   }, []);
 
   const effects = useCallback(
@@ -36,7 +41,7 @@ export default function useForm() {
   const form = {
     values: valuesRef.current,
     reset: () => {
-      PubSub.publish("reset");
+      pubSub.publish("reset");
     },
     setRules: (fieldRules: { [k: string]: any[] }) => {
       console.log("setRules", fieldRules);

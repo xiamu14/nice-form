@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@types/pubsub-js': ^1.8.3
   '@types/react': ^17.0.38
-  pubsub-js: ^1.9.4
+  onfire.js: ^2.0.1
   react: ^17.0.2
   rimraf: ^3.0.2
   typescript: ^4.5.4
@@ -11,7 +11,7 @@ specifiers:
 dependencies:
   '@types/pubsub-js': registry.npmmirror.com/@types/pubsub-js/1.8.3
   '@types/react': registry.npmmirror.com/@types/react/17.0.38
-  pubsub-js: registry.npmmirror.com/pubsub-js/1.9.4
+  onfire.js: 2.0.1
   react: registry.npmmirror.com/react/17.0.2
   rimraf: registry.npmmirror.com/rimraf/3.0.2
   typescript: registry.npmmirror.com/typescript/4.5.4
@@ -20,6 +20,10 @@ packages:
 
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=, tarball: concat-map/download/concat-map-0.0.1.tgz}
+    dev: false
+
+  /onfire.js/2.0.1:
+    resolution: {integrity: sha512-Fwl7tXwnzBSwedaJkF3Zx1KKcGyQvpPw8Y8mTu7ZLE+6TMFv2W5TONW3DwDejp8vivXZSlb7dxjlld2jT1YW8Q==}
     dev: false
 
   registry.nlark.com/balanced-match/1.0.2:
@@ -154,12 +158,6 @@ packages:
       minimatch: registry.nlark.com/minimatch/3.0.4
       once: registry.nlark.com/once/1.4.0
       path-is-absolute: registry.nlark.com/path-is-absolute/1.0.1
-    dev: false
-
-  registry.npmmirror.com/pubsub-js/1.9.4:
-    resolution: {integrity: sha512-hJYpaDvPH4w8ZX/0Fdf9ma1AwRgU353GfbaVfPjfJQf1KxZ2iHaHl3fAUw1qlJIR5dr4F3RzjGaWohYUEyoh7A==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/pubsub-js/download/pubsub-js-1.9.4.tgz}
-    name: pubsub-js
-    version: 1.9.4
     dev: false
 
   registry.npmmirror.com/react/17.0.2:

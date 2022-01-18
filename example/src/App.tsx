@@ -4,12 +4,10 @@ import { Field, Form, useForm } from "react-form-zero";
 
 const Input = memo(
   ({
-    name,
     label,
     error,
     ...register
   }: {
-    name: string;
     label?: string;
     value?: string;
     onChange?: (e: any) => void;
@@ -31,8 +29,11 @@ function App() {
 
   const handleSubmit = async () => {
     const values = await form.submit();
-    console.log("debug values", values);
-    form.reset();
+    console.log(
+      "%c values",
+      "background: #69c0ff; color: white; padding: 4px",
+      values
+    );
   };
 
   useEffect(() => {
@@ -47,17 +48,18 @@ function App() {
   return (
     <div className="App">
       <Form form={form}>
-        <Field>
-          <Input label="昵称：" name="nickname" />
+        <Field name="nickname">
+          <Input label="昵称：" />
         </Field>
         <Field
+          name="gardener"
           rules={[
             {
               required: true,
             },
           ]}
         >
-          <Input label="性别：" name="gardener"></Input>
+          <Input label="性别："></Input>
         </Field>
       </Form>
       <button onClick={handleSubmit}>提交</button>
