@@ -19,8 +19,6 @@
   "dependencies": {
     "@types/pubsub-js": "^1.8.3",
     "@types/react": "^17.0.38",
-    "onfire.js": "^2.0.1",
-    "react": "^17.0.2",
     "rimraf": "^3.0.2",
     "typescript": "^4.5.4"
   }
