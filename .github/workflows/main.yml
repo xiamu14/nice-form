@@ -24,20 +24,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
-      - name: use Node.js ${{matrix.node-version}}
+
+      - name: Setup Node.js ${{matrix.node-version}}
         uses: actions/setup-node@v1
         with:
           node-version: ${{matrix.node-version}}
+
       - name: Install dependencies
         run: |
           node common/scripts/install-run-rush.js change -v
           node common/scripts/install-run-rush.js install
+
       - name: Build ${{ matrix.app-name }}
         working-directory: ${{ matrix.app-dir }}
         run: |
           node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ matrix.app }}
 
-      - name: publish ${{matrix.app-name}}
+      - name: Publish ${{matrix.app-name}}
         working-directory: ${{ matrix.app-dir }}
         run: yarn publish --access public
         env:
