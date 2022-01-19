@@ -1,7 +1,10 @@
 {
   "name": "react-form-zero",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc"
@@ -9,6 +12,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "onfire.js": "^2.0.1"
+  },
   "dependencies": {
     "@types/pubsub-js": "^1.8.3",
     "@types/react": "^17.0.38",
