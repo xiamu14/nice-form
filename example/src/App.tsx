@@ -1,5 +1,5 @@
-import { NiceField, NiceForm, useForm } from "nice-form";
 import React, { memo, useEffect, useRef, useState } from "react";
+import { NiceField, NiceForm, useForm } from "react-nice-form";
 import "./App.css";
 
 const Input = memo(

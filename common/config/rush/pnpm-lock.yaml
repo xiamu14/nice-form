@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   "@rush-temp/example": file:./projects/example.tgz
-  "@rush-temp/nice-form": file:./projects/nice-form.tgz
+  "@rush-temp/react-nice-form": file:./projects/react-nice-form.tgz
   "@types/pubsub-js": ^1.8.3
   "@types/react-dom": ^17.0.10
   "@vitejs/plugin-react": ^1.0.7
@@ -15,7 +15,7 @@ specifiers:
 
 dependencies:
   "@rush-temp/example": file:projects/example.tgz
-  "@rush-temp/nice-form": file:projects/nice-form.tgz
+  "@rush-temp/react-nice-form": file:projects/react-nice-form.tgz
   "@types/pubsub-js": 1.8.3
   "@types/react-dom": 17.0.11
   "@vitejs/plugin-react": 1.1.4
@@ -1197,13 +1197,13 @@ packages:
       - supports-color
     dev: false
 
-  file:projects/nice-form.tgz:
+  file:projects/react-nice-form.tgz:
     resolution:
       {
         integrity: sha512-NKV76sFjvVMGZeTOqbtZc088sZILc86gCfKk40rdzPc2Avl4TDUOEEnZ6AMY+ZUkYKpe5TwK7YY+cyolV2C2cQ==,
-        tarball: file:projects/nice-form.tgz,
+        tarball: file:projects/react-nice-form.tgz,
       }
-    name: "@rush-temp/nice-form"
+    name: "@rush-temp/react-nice-form"
     version: 0.0.0
     dependencies:
       "@types/pubsub-js": 1.8.3

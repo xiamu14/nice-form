@@ -453,7 +453,7 @@
       "projectFolder": "example"
     },
     {
-      "packageName": "nice-form",
+      "packageName": "react-nice-form",
       "projectFolder": "pkg"
     }
   ]
