@@ -1,34 +1,50 @@
-import React, { memo, useEffect } from "react";
+import { NiceField, NiceForm, useForm } from "nice-form";
+import React, { memo, useEffect, useRef, useState } from "react";
 import "./App.css";
-import { Field, Form, useForm } from "react-form-zero";
 
 const Input = memo(
   ({
     label,
     error,
-    ...register
+    placeholder,
+    value,
+    ...rest
   }: {
     label?: string;
     value?: string;
     onChange?: (e: any) => void;
     error?: string;
+    placeholder?: string;
   }) => {
-    // console.log("check ", name);
+    console.log("placeholder ", label, placeholder);
     return (
       <div>
         <label>{label}</label>
-        <input {...register} />
-        <p>{error}</p>
+        {/* FIXED: This is likely caused by the value changing from undefined to a defined value */}
+        <input value={value ?? ""} {...rest} />
+        {error && <p>{error}</p>}
       </div>
     );
   }
 );
 
 function App() {
-  const { form, effects } = useForm();
+  const form = useForm({
+    effects: ({ onFieldValueChange, setFieldState }) => {
+      onFieldValueChange("nickname", ({ value }: { value: any }) => {
+        value === "英姿" &&
+          setFieldState("gender", {
+            value: "女",
+            compProps: { placeholder: "test" },
+          });
+      });
+    },
+  });
+
+  const formRef = useRef(form);
 
   const handleSubmit = async () => {
-    const values = await form.submit();
+    const values = formRef.current.submit();
     console.log(
       "%c values",
       "background: #69c0ff; color: white; padding: 4px",
@@ -36,33 +52,35 @@ function App() {
     );
   };
 
+  const [initialValues, setInitialValues] = useState({});
+
   useEffect(() => {
-    effects(({ on, set }) => {
-      on("nickname", ({ value }: { value: any }) => {
-        console.log("debug nickname", value);
-        set("gardener", { value: "12" });
+    setTimeout(() => {
+      setInitialValues({ nickname: "test1231234" });
+      formRef.current.setFieldState("nickname", {
+        compProps: { placeholder: "逆臣" },
       });
-    });
-  }, [effects]);
+    }, 2000);
+  }, []);
 
   return (
     <div className="App">
-      <Form form={form}>
-        <Field name="nickname">
+      <NiceForm form={formRef.current} initialValues={initialValues}>
+        <NiceField name="nickname">
           <Input label="昵称：" />
-        </Field>
-        <Field
-          name="gardener"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
+        </NiceField>
+        <NiceField name="gender" rule={{ required: "请输入性别" }}>
           <Input label="性别："></Input>
-        </Field>
-      </Form>
-      <button onClick={handleSubmit}>提交</button>
+        </NiceField>
+        <button onClick={handleSubmit}>提交</button>
+        <button
+          onClick={() => {
+            formRef.current.reset();
+          }}
+        >
+          重置
+        </button>
+      </NiceForm>
     </div>
   );
 }

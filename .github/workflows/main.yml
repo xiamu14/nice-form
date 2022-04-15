@@ -15,10 +15,10 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
-        app-name: [react-form-zero]
+        app-name: [nice-form]
         include:
-          - app-name: react-form-zero
-            app: "react-form-zero"
+          - app-name: nice-form
+            app: "nice-form"
             app-dir: "core"
             app-build: "core/dist"
     steps:

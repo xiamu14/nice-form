@@ -1,26 +1,31 @@
 import React, {
-  useContext,
-  useState,
-  useEffect,
   useCallback,
+  useContext,
+  useEffect,
   useRef,
+  useState,
 } from "react";
 import FormContext from "../context";
-import pubSub from "../pub-sub";
+import pubSub from "../pub_sub";
+import { RuleType, VerifyOnType } from "../types";
+import { verifyUtil } from "../utils/verify";
 
 interface Props {
   name: string;
-  rules?: any[];
+  rule?: RuleType;
+  verifyOn?: VerifyOnType;
 }
 
 const Field = (props: React.PropsWithChildren<Props>) => {
-  const { children, name, rules } = props;
-  const [value, setValue] = useState<any>("");
+  const { children, name, rule, verifyOn } = props;
+  const [value, setValue] = useState<any>();
   const [error, setError] = useState<string>();
+  const [compProps, setCompProps] = useState<any>();
 
   const keyRef = useRef(name);
 
   const mountedRef = useRef<boolean>(false);
+  const verifyOnRef = useRef<VerifyOnType>(verifyOn ?? "blur");
   const context = useContext(FormContext);
 
   useEffect(() => {
@@ -35,37 +40,40 @@ const Field = (props: React.PropsWithChildren<Props>) => {
 
   const verify = useCallback(
     (name: string) => {
-      console.log("debug rules", name, rules);
-      if (rules) {
-        console.log("debug rule", name, rules);
-        setError("请输入xxx");
+      if (rule) {
+        // TODO: 这里做校验
+        const result = verifyUtil(rule, value);
+        console.log("debug verify", name, result);
+        result.valid ? setError(undefined) : setError(result.message);
       }
     },
-    [rules]
+    [value]
   );
 
   useEffect(() => {
     pubSub.subscribe("reset", () => {
-      setValue("");
+      if (name in context.defaultValues) {
+        setValue(context.defaultValues[name]);
+      } else {
+        setValue(undefined);
+      }
       setError(undefined);
     });
     pubSub.subscribe(`set-${keyRef.current}`, (fieldState) => {
-      console.log("debug", fieldState);
-      // TODO: 这里执行具体的联动逻辑
       if ("value" in fieldState) {
-        console.log(
-          "%c effect set",
-          "background: #69c0ff; color: white; padding: 4px",
-          fieldState
-        );
-
         setValue(fieldState.value);
+      }
+      if ("compProps" in fieldState) {
+        setCompProps(fieldState.compProps);
+      }
+      if ("error" in fieldState) {
+        setError(fieldState.error);
       }
     });
     () => {
       pubSub.clearAllSubscriptions();
     };
-  }, []);
+  }, [context]);
 
   useEffect(() => {
     pubSub.publish("change", { [name]: value });
@@ -73,10 +81,28 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   }, [value]);
 
   useEffect(() => {
-    if (context && rules) {
-      context.setFieldRules({ [keyRef.current]: rules });
+    if (context && rule) {
+      context.setFieldRules({ [keyRef.current]: rule });
     }
-  }, [context, rules]);
+  }, [context, rule]);
+
+  useEffect(() => {
+    if (context) {
+      const startValues = {
+        ...context.defaultValues,
+        ...context.initialValues,
+      };
+
+      if (name in startValues) {
+        console.log(
+          "%c debug startValues",
+          "background: #69c0ff; color: white; padding: 4px",
+          startValues
+        );
+        setValue(startValues[name]);
+      }
+    }
+  }, [context]);
 
   const bind = useCallback(
     (child: React.ReactNode) => {
@@ -84,16 +110,9 @@ const Field = (props: React.PropsWithChildren<Props>) => {
         return null;
       }
 
-      // console.log(child.props);
-
-      console.log(
-        "%c debug child.props",
-        "background: #69c0ff; color: white; padding: 4px",
-        child.props
-      );
-
       const childProps = {
         ...child.props,
+        ...compProps,
         ...{
           value,
           error, // 校验结果
@@ -101,8 +120,10 @@ const Field = (props: React.PropsWithChildren<Props>) => {
             handleChange(keyRef.current, event);
           },
           onBlur: () => {
-            console.log("debug blur");
-            verify(keyRef.current);
+            verifyOnRef.current === "blur" && verify(keyRef.current);
+            if ("onBlur" in child.props) {
+              child.props.onBlur();
+            }
           },
         },
       };
@@ -114,4 +135,4 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   return <div>{React.Children.map(children, bind)}</div>;
 };
 
-export default Field;
+export default React.memo(Field);
