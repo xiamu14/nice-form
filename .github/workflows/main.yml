@@ -19,8 +19,8 @@ jobs:
         include:
           - app-name: nice-form
             app: "nice-form"
-            app-dir: "core"
-            app-build: "core/dist"
+            app-dir: "pkg"
+            app-build: "pkg/dist"
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
