@@ -37,6 +37,13 @@ function App() {
             value: "女",
             compProps: { placeholder: "test" },
           });
+        value === "消失"
+          ? setFieldState("gender", {
+              visible: false,
+            })
+          : setFieldState("gender", {
+              visible: true,
+            });
       });
     },
   });
