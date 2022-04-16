@@ -10,3 +10,10 @@ export type RuleType =
   | { required: string };
 
 export type VerifyOnType = "blur" | "change";
+
+export interface FieldStateType {
+  value?: any;
+  compProps?: Record<string, any>;
+  visible?: boolean;
+  error?: string;
+}

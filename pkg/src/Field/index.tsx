@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import FormContext from "../context";
 import pubSub from "../pub_sub";
-import { RuleType, VerifyOnType } from "../types";
+import { FieldStateType, RuleType, VerifyOnType } from "../types";
 import { verifyUtil } from "../utils/verify";
 
 interface Props {
@@ -20,9 +20,11 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   const { children, name, rule, verifyOn } = props;
   const [value, setValue] = useState<any>();
   const [error, setError] = useState<string>();
+  const [visible, setVisible] = useState(true);
   const [compProps, setCompProps] = useState<any>();
 
-  const keyRef = useRef(name);
+  const visibleRef = useRef<boolean>(true);
+  const nameRef = useRef(name);
 
   const mountedRef = useRef<boolean>(false);
   const verifyOnRef = useRef<VerifyOnType>(verifyOn ?? "blur");
@@ -31,6 +33,10 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   useEffect(() => {
     mountedRef.current = true;
   }, []);
+
+  useEffect(() => {
+    visibleRef.current = visible;
+  }, [visible]);
 
   const handleChange = (name: string, event: InputEvent | any) => {
     const value = event.target.value;
@@ -59,7 +65,7 @@ const Field = (props: React.PropsWithChildren<Props>) => {
       }
       setError(undefined);
     });
-    pubSub.subscribe(`set-${keyRef.current}`, (fieldState) => {
+    pubSub.subscribe(`set-${nameRef.current}`, (fieldState: FieldStateType) => {
       if ("value" in fieldState) {
         setValue(fieldState.value);
       }
@@ -69,6 +75,16 @@ const Field = (props: React.PropsWithChildren<Props>) => {
       if ("error" in fieldState) {
         setError(fieldState.error);
       }
+      if ("visible" in fieldState) {
+        if (visibleRef.current !== fieldState.visible) {
+          setVisible(!!fieldState.visible);
+          if (fieldState.visible) {
+            pubSub.publish("show", nameRef.current);
+          } else {
+            pubSub.publish("hide", nameRef.current);
+          }
+        }
+      }
     });
     () => {
       pubSub.clearAllSubscriptions();
@@ -76,13 +92,13 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   }, [context]);
 
   useEffect(() => {
-    pubSub.publish("change", { [name]: value });
-    pubSub.publish(`on-${keyRef.current}`, { value });
+    pubSub.publish("change", { [nameRef.current]: value });
+    pubSub.publish(`on-${nameRef.current}`, { value });
   }, [value]);
 
   useEffect(() => {
     if (context && rule) {
-      context.setFieldRules({ [keyRef.current]: rule });
+      context.setFieldRules({ [nameRef.current]: rule });
     }
   }, [context, rule]);
 
@@ -117,10 +133,10 @@ const Field = (props: React.PropsWithChildren<Props>) => {
           value,
           error, // 校验结果
           onChange: (event: any) => {
-            handleChange(keyRef.current, event);
+            handleChange(nameRef.current, event);
           },
           onBlur: () => {
-            verifyOnRef.current === "blur" && verify(keyRef.current);
+            verifyOnRef.current === "blur" && verify(nameRef.current);
             if ("onBlur" in child.props) {
               child.props.onBlur();
             }
@@ -129,10 +145,18 @@ const Field = (props: React.PropsWithChildren<Props>) => {
       };
       return React.cloneElement(child, childProps);
     },
-    [value, error, handleChange, verify]
+    [value, error, handleChange, verify, visible]
   );
 
-  return <div>{React.Children.map(children, bind)}</div>;
+  return (
+    <div
+      style={{
+        display: visible ? "" : "none",
+      }}
+    >
+      {React.Children.map(children, bind)}
+    </div>
+  );
 };
 
 export default React.memo(Field);
