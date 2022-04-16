@@ -86,7 +86,7 @@ const Field = (props: React.PropsWithChildren<Props>) => {
         }
       }
     });
-    () => {
+    return () => {
       pubSub.clearAllSubscriptions();
     };
   }, [context]);

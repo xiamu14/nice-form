@@ -1,6 +1,6 @@
 {
   "name": "react-nice-form",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "files": [
     "dist"
@@ -13,14 +13,20 @@
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "onfire.js": "^2.0.1",
     "react": "^17.0.2"
   },
   "dependencies": {
-    "@types/pubsub-js": "^1.8.3",
     "@types/react": "^17.0.38",
+    "onfire.js": "^2.0.1",
     "renew-it": "^1.5.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^3.0.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^8.13.0",
+    "eslint-config-alloy": "^4.5.1",
+    "eslint-plugin-react": "^7.29.4",
     "typescript": "^4.5.4"
   }
 }

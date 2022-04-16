@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import pubSub from "./pub_sub";
-import { FieldStateType, RuleType } from "./types";
+import { FieldStateType, FormType, RuleType } from "./types";
 import { verifyUtil } from "./utils/verify";
 
 type EffectsAction = ({
@@ -38,7 +38,7 @@ export default function useForm({ effects }: FormProps) {
     pubSub.subscribe("verify", (error) => {
       errorsRef.current = { ...(errorsRef.current || {}), ...error };
     });
-    () => {
+    return () => {
       pubSub.clearAllSubscriptions();
     };
   }, []);
@@ -47,9 +47,12 @@ export default function useForm({ effects }: FormProps) {
     pubSub.subscribe(`on-${name}`, (data) => callback(data));
   }, []);
 
-  const setFieldState = useCallback((name, fieldState) => {
-    pubSub.publish(`set-${name}`, fieldState);
-  }, []);
+  const setFieldState = useCallback(
+    (name: string, fieldState: FieldStateType) => {
+      pubSub.publish(`set-${name}`, fieldState);
+    },
+    []
+  );
 
   useEffect(() => {
     effectsRef.current?.({
@@ -58,7 +61,7 @@ export default function useForm({ effects }: FormProps) {
     });
   }, []);
 
-  const form = {
+  const form: FormType = {
     // values: valuesRef.current,
     setFieldState,
     reset: () => {

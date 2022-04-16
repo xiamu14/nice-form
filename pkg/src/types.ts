@@ -17,3 +17,14 @@ export interface FieldStateType {
   visible?: boolean;
   error?: string;
 }
+
+export interface FormType {
+  setFieldState: (name: string, fieldState: FieldStateType) => void;
+  reset: () => void;
+  setRules: (fieldRules: { [k: string]: RuleType }) => void;
+  submit: () =>
+    | {
+        [x: string]: any;
+      }
+    | undefined;
+}
