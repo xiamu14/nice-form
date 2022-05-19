@@ -16,6 +16,7 @@
     "react": "^17.0.2"
   },
   "dependencies": {
+    "@redchili/pubsub": "0.0.1-alpha.0",
     "@types/react": "^17.0.38",
     "onfire.js": "^2.0.1",
     "renew-it": "^1.5.0",

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-import pubSub from "./pub_sub";
 import { FieldStateType, FormType, RuleType } from "./types";
+import pubSub from "./utils/pubsub";
 import { verifyUtil } from "./utils/verify";
 
 type EffectsAction = ({
@@ -39,17 +39,23 @@ export default function useForm({ effects }: FormProps) {
       errorsRef.current = { ...(errorsRef.current || {}), ...error };
     });
     return () => {
-      pubSub.clearAllSubscriptions();
+      pubSub.unsubscribeAll();
     };
   }, []);
 
-  const onFieldValueChange = useCallback((name: string, callback) => {
-    pubSub.subscribe(`on-${name}`, (data) => callback(data));
-  }, []);
+  const onFieldValueChange = useCallback(
+    (name: string, callback: (data: { value: any }) => void) => {
+      pubSub.subscribe(
+        "onFieldValueChange",
+        (data) => name === data.key && callback(data.data)
+      );
+    },
+    []
+  );
 
   const setFieldState = useCallback(
     (name: string, fieldState: FieldStateType) => {
-      pubSub.publish(`set-${name}`, fieldState);
+      pubSub.publish("setFieldState", { key: name, fieldState });
     },
     []
   );
@@ -65,7 +71,7 @@ export default function useForm({ effects }: FormProps) {
     // values: valuesRef.current,
     setFieldState,
     reset: () => {
-      pubSub.publish("reset");
+      pubSub.publish("reset", undefined);
     },
     setRules: (fieldRules: { [k: string]: RuleType }) => {
       // console.log("setRules", fieldRules);

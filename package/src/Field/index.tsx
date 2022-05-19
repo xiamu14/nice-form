@@ -6,9 +6,10 @@ import React, {
   useState,
 } from "react";
 import FormContext from "../context";
-import pubSub from "../pub_sub";
+
 import { FieldStateType, RuleType, VerifyOnType } from "../types";
 import { verifyUtil } from "../utils/verify";
+import pubsub from "../utils/pubsub";
 
 interface Props {
   name: string;
@@ -41,7 +42,7 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   const handleChange = (name: string, event: InputEvent | any) => {
     const value = event.target.value;
     setValue(value);
-    pubSub.publish("change", { [name]: value });
+    pubsub.publish("change", { [name]: value });
   };
 
   const verify = useCallback(
@@ -57,7 +58,7 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   );
 
   useEffect(() => {
-    pubSub.subscribe("reset", () => {
+    pubsub.subscribe("reset", () => {
       if (name in context.defaultValues) {
         setValue(context.defaultValues[name]);
       } else {
@@ -65,35 +66,44 @@ const Field = (props: React.PropsWithChildren<Props>) => {
       }
       setError(undefined);
     });
-    pubSub.subscribe(`set-${nameRef.current}`, (fieldState: FieldStateType) => {
-      if ("value" in fieldState) {
-        setValue(fieldState.value);
-      }
-      if ("compProps" in fieldState) {
-        setCompProps(fieldState.compProps);
-      }
-      if ("error" in fieldState) {
-        setError(fieldState.error);
-      }
-      if ("visible" in fieldState) {
-        if (visibleRef.current !== fieldState.visible) {
-          setVisible(!!fieldState.visible);
-          if (fieldState.visible) {
-            pubSub.publish("show", nameRef.current);
-          } else {
-            pubSub.publish("hide", nameRef.current);
+    pubsub.subscribe(
+      "setFieldState",
+      ({ key, fieldState }: { key: string; fieldState: FieldStateType }) => {
+        if (key !== nameRef.current) {
+          return;
+        }
+        if ("value" in fieldState) {
+          setValue(fieldState.value);
+        }
+        if ("compProps" in fieldState) {
+          setCompProps(fieldState.compProps);
+        }
+        if ("error" in fieldState) {
+          setError(fieldState.error);
+        }
+        if ("visible" in fieldState) {
+          if (visibleRef.current !== fieldState.visible) {
+            setVisible(!!fieldState.visible);
+            if (fieldState.visible) {
+              pubsub.publish("show", nameRef.current);
+            } else {
+              pubsub.publish("hide", nameRef.current);
+            }
           }
         }
       }
-    });
+    );
     return () => {
-      pubSub.clearAllSubscriptions();
+      pubsub.unsubscribeAll();
     };
   }, [context]);
 
   useEffect(() => {
-    pubSub.publish("change", { [nameRef.current]: value });
-    pubSub.publish(`on-${nameRef.current}`, { value });
+    pubsub.publish("change", { [nameRef.current]: value });
+    pubsub.publish("onFieldValueChange", {
+      key: nameRef.current,
+      data: { value },
+    });
   }, [value]);
 
   useEffect(() => {
