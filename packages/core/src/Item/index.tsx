@@ -155,11 +155,11 @@ const Item = (props: React.PropsWithChildren<Props>) => {
             }
           },
         },
-        style: {
-          display: visible ? "" : "none",
-        },
+        // style: {
+        //   display: visible ? "" : "none",
+        // },
       };
-      return React.cloneElement(child, childProps);
+      return visible ? React.cloneElement(child, childProps) : null;
     },
     [value, error, handleChange, verify, visible]
   );

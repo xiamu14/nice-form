@@ -21,7 +21,7 @@ const Input = memo(
   }) => {
     console.log("value", value, rest);
     return (
-      <div className="section" style={style}>
+      <div className="section">
         <label>{label}</label>
         {/* FIXED: This is likely caused by the value changing from undefined to a defined value */}
         <input value={value ?? ""} {...rest} />
