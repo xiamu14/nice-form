@@ -1,3 +1,4 @@
+import { Subscriber } from "@redchili/pubsub";
 import React, {
   useCallback,
   useContext,
@@ -6,10 +7,9 @@ import React, {
   useState,
 } from "react";
 import FormContext from "../context";
-
 import { FieldStateType, RuleType, VerifyOnType } from "../types";
-import { verifyUtil } from "../utils/verify";
 import pubsub from "../utils/pubsub";
+import { verifyUtil } from "../utils/verify";
 
 interface Props {
   name: string;
@@ -17,12 +17,14 @@ interface Props {
   verifyOn?: VerifyOnType;
 }
 
-const Field = (props: React.PropsWithChildren<Props>) => {
+const subscribe = new Subscriber();
+
+const Item = (props: React.PropsWithChildren<Props>) => {
   const { children, name, rule, verifyOn } = props;
   const [value, setValue] = useState<any>();
   const [error, setError] = useState<string>();
   const [visible, setVisible] = useState(true);
-  const [compProps, setCompProps] = useState<any>();
+  const [itemProps, setItemProps] = useState<any>();
 
   const visibleRef = useRef<boolean>(true);
   const nameRef = useRef(name);
@@ -58,7 +60,7 @@ const Field = (props: React.PropsWithChildren<Props>) => {
   );
 
   useEffect(() => {
-    pubsub.subscribe("reset", () => {
+    pubsub.subscribe("reset", subscribe, () => {
       if (name in context.defaultValues) {
         setValue(context.defaultValues[name]);
       } else {
@@ -67,7 +69,8 @@ const Field = (props: React.PropsWithChildren<Props>) => {
       setError(undefined);
     });
     pubsub.subscribe(
-      "setFieldState",
+      "setState",
+      subscribe,
       ({ key, fieldState }: { key: string; fieldState: FieldStateType }) => {
         if (key !== nameRef.current) {
           return;
@@ -75,8 +78,8 @@ const Field = (props: React.PropsWithChildren<Props>) => {
         if ("value" in fieldState) {
           setValue(fieldState.value);
         }
-        if ("compProps" in fieldState) {
-          setCompProps(fieldState.compProps);
+        if ("props" in fieldState) {
+          setItemProps(fieldState.props);
         }
         if ("error" in fieldState) {
           setError(fieldState.error);
@@ -100,7 +103,7 @@ const Field = (props: React.PropsWithChildren<Props>) => {
 
   useEffect(() => {
     pubsub.publish("change", { [nameRef.current]: value });
-    pubsub.publish("onFieldValueChange", {
+    pubsub.publish("onValueChange", {
       key: nameRef.current,
       data: { value },
     });
@@ -138,7 +141,7 @@ const Field = (props: React.PropsWithChildren<Props>) => {
 
       const childProps = {
         ...child.props,
-        ...compProps,
+        ...itemProps,
         ...{
           value,
           error, // 校验结果
@@ -152,21 +155,16 @@ const Field = (props: React.PropsWithChildren<Props>) => {
             }
           },
         },
+        style: {
+          display: visible ? "" : "none",
+        },
       };
       return React.cloneElement(child, childProps);
     },
     [value, error, handleChange, verify, visible]
   );
 
-  return (
-    <div
-      style={{
-        display: visible ? "" : "none",
-      }}
-    >
-      {React.Children.map(children, bind)}
-    </div>
-  );
+  return <>{React.Children.map(children, bind)}</>;
 };
 
-export default React.memo(Field);
+export default React.memo(Item);

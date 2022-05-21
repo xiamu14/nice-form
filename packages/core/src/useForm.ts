@@ -1,14 +1,17 @@
+import { Subscriber } from "@redchili/pubsub";
 import { useCallback, useEffect, useRef } from "react";
 import { FieldStateType, FormType, RuleType } from "./types";
 import pubSub from "./utils/pubsub";
 import { verifyUtil } from "./utils/verify";
 
+const subscriber = new Subscriber();
+
 type EffectsAction = ({
-  onFieldValueChange,
-  setFieldState,
+  onValueChange,
+  setState,
 }: {
-  onFieldValueChange: (name: string, callback: any) => void;
-  setFieldState: (name: string, fieldState: FieldStateType) => void;
+  onValueChange: (name: string, callback: any) => void;
+  setState: (name: string, fieldState: FieldStateType) => void;
 }) => void;
 
 interface FormProps {
@@ -22,20 +25,20 @@ export default function useForm({ effects }: FormProps) {
   const rulesRef = useRef<{ [k: string]: RuleType }>();
   const effectsRef = useRef<EffectsAction | undefined>(effects);
   useEffect(() => {
-    pubSub.subscribe("change", (field) => {
+    pubSub.subscribe("change", subscriber, (field) => {
       // NOTE: 存储值
       valuesRef.current = { ...(valuesRef.current || {}), ...field };
     });
-    pubSub.subscribe("hide", (fieldName: string) => {
+    pubSub.subscribe("hide", subscriber, (fieldName: string) => {
       // NOTE: 隐藏值
       hideFieldSRef.current = [...hideFieldSRef.current, fieldName];
     });
-    pubSub.subscribe("show", (fieldName: string) => {
+    pubSub.subscribe("show", subscriber, (fieldName: string) => {
       // NOTE: 消失值
       const index = hideFieldSRef.current.indexOf(fieldName);
       hideFieldSRef.current = hideFieldSRef.current.splice(index, 1);
     });
-    pubSub.subscribe("verify", (error) => {
+    pubSub.subscribe("verify", subscriber, (error) => {
       errorsRef.current = { ...(errorsRef.current || {}), ...error };
     });
     return () => {
@@ -43,33 +46,31 @@ export default function useForm({ effects }: FormProps) {
     };
   }, []);
 
-  const onFieldValueChange = useCallback(
+  const onValueChange = useCallback(
     (name: string, callback: (data: { value: any }) => void) => {
       pubSub.subscribe(
-        "onFieldValueChange",
+        "onValueChange",
+        subscriber,
         (data) => name === data.key && callback(data.data)
       );
     },
     []
   );
 
-  const setFieldState = useCallback(
-    (name: string, fieldState: FieldStateType) => {
-      pubSub.publish("setFieldState", { key: name, fieldState });
-    },
-    []
-  );
+  const setState = useCallback((name: string, fieldState: FieldStateType) => {
+    pubSub.publish("setState", { key: name, fieldState });
+  }, []);
 
   useEffect(() => {
     effectsRef.current?.({
-      onFieldValueChange,
-      setFieldState,
+      onValueChange,
+      setState,
     });
   }, []);
 
   const form: FormType = {
     // values: valuesRef.current,
-    setFieldState,
+    setState,
     reset: () => {
       pubSub.publish("reset", undefined);
     },
@@ -105,7 +106,7 @@ export default function useForm({ effects }: FormProps) {
 
           if (!result.valid) {
             valid = false;
-            setFieldState(key, { error: result.message });
+            setState(key, { error: result.message });
           }
         });
         return valid ? currentValue : undefined;
@@ -114,7 +115,9 @@ export default function useForm({ effects }: FormProps) {
     },
   };
 
-  return form;
+  const formRef = useRef(form);
+
+  return { form: formRef.current };
 }
 
 function filterObject(value: Record<string, any>, keys: string[]) {

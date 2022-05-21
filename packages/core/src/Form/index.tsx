@@ -36,7 +36,7 @@ const Form = React.memo(
 
     return (
       <FormContext.Provider value={contextValue}>
-        <div>{childrenMemorized}</div>
+        {childrenMemorized}
       </FormContext.Provider>
     );
   }

@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@redchili/pubsub': 0.0.1-alpha.0
+  '@redchili/pubsub': 0.0.1-alpha.1
   '@types/react': ^17.0.38
   '@typescript-eslint/eslint-plugin': ^5.19.0
   '@typescript-eslint/parser': ^5.19.0
@@ -14,7 +14,7 @@ specifiers:
   typescript: ^4.5.4
 
 dependencies:
-  '@redchili/pubsub': registry.npmjs.org/@redchili/pubsub/0.0.1-alpha.0
+  '@redchili/pubsub': registry.npmjs.org/@redchili/pubsub/0.0.1-alpha.1
   '@types/react': registry.npmmirror.com/@types/react/17.0.38
   onfire.js: 2.0.1
   renew-it: registry.npmjs.org/renew-it/1.5.2
@@ -168,10 +168,10 @@ packages:
       fastq: registry.npmjs.org/fastq/1.13.0
     dev: true
 
-  registry.npmjs.org/@redchili/pubsub/0.0.1-alpha.0:
-    resolution: {integrity: sha512-c+CDa4MsCMC9yweWjl2tVvQ3G4R34SSQi3ZHFBT1i2UML2YZHTRHMSNqPA5HFOO+G+rNbXEeDhc67maf7IE1SQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@redchili/pubsub/-/pubsub-0.0.1-alpha.0.tgz}
+  registry.npmjs.org/@redchili/pubsub/0.0.1-alpha.1:
+    resolution: {integrity: sha512-iJlviXiqwESBAxxKv/zXw2yhVRRCyAaH/4EU7WzbGk8MVkmNsOSQywVwjkni6ggzjw/mKGv9RVwPargBhJ0NJQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@redchili/pubsub/-/pubsub-0.0.1-alpha.1.tgz}
     name: '@redchili/pubsub'
-    version: 0.0.1-alpha.0
+    version: 0.0.1-alpha.1
     dependencies:
       nanoid: registry.npmjs.org/nanoid/3.3.4
     dev: false

@@ -42,6 +42,7 @@ input {
   border: 1px solid white;
   padding: 10px 15px;
   font-size: 14px;
+  color: rgb(60, 59, 59);
 }
 
 .label,

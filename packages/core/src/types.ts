@@ -13,13 +13,13 @@ export type VerifyOnType = "blur" | "change";
 
 export interface FieldStateType {
   value?: any;
-  compProps?: Record<string, any>;
+  props?: Record<string, any>;
   visible?: boolean;
   error?: string;
 }
 
 export interface FormType {
-  setFieldState: (name: string, fieldState: FieldStateType) => void;
+  setState: (name: string, fieldState: FieldStateType) => void;
   reset: () => void;
   setRules: (fieldRules: { [k: string]: RuleType }) => void;
   submit: () =>

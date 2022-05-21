@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "@react-nice-form/example",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
@@ -7,9 +7,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-nice-form/antd": "workspace:^0.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-nice-form": "~0.1.0"
+    "react-nice-form": "workspace:~0.1.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.33",

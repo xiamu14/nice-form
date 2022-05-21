@@ -1,4 +1,4 @@
-import { RuleType } from "./../types";
+import { RuleType } from "../types";
 import { isFunction } from "./type_guard";
 /**
  * @description 校验
