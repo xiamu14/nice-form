@@ -97,7 +97,7 @@ const Item = (props: React.PropsWithChildren<Props>) => {
       }
     );
     return () => {
-      pubsub.unsubscribeAll();
+      pubsub.unsubscribe();
     };
   }, [context]);
 

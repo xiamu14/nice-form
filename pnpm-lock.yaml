@@ -28,7 +28,7 @@ importers:
 
   packages/core:
     specifiers:
-      '@redchili/pubsub': 0.0.1-alpha.1
+      '@redchili/pubsub': 0.0.1-alpha.2
       '@types/react': ^17.0.38
       '@typescript-eslint/eslint-plugin': ^5.19.0
       '@typescript-eslint/parser': ^5.19.0
@@ -39,7 +39,7 @@ importers:
       rimraf: ^3.0.2
       typescript: ^4.5.4
     dependencies:
-      '@redchili/pubsub': registry.npmjs.org/@redchili/pubsub/0.0.1-alpha.1
+      '@redchili/pubsub': registry.npmjs.org/@redchili/pubsub/0.0.1-alpha.2
       '@types/react': registry.npmjs.org/@types/react/17.0.45
       renew-it: registry.npmjs.org/renew-it/1.5.2
       rimraf: registry.npmjs.org/rimraf/3.0.2
@@ -51,7 +51,7 @@ importers:
       eslint-plugin-react: registry.npmjs.org/eslint-plugin-react/7.30.0_eslint@8.15.0
       typescript: registry.npmjs.org/typescript/4.6.4
 
-  packages/example:
+  packages/web-example:
     specifiers:
       '@react-nice-form/antd': workspace:^0.0.1
       '@types/react': ^17.0.33
@@ -579,10 +579,10 @@ packages:
       fastq: registry.npmjs.org/fastq/1.13.0
     dev: true
 
-  registry.npmjs.org/@redchili/pubsub/0.0.1-alpha.1:
-    resolution: {integrity: sha512-iJlviXiqwESBAxxKv/zXw2yhVRRCyAaH/4EU7WzbGk8MVkmNsOSQywVwjkni6ggzjw/mKGv9RVwPargBhJ0NJQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@redchili/pubsub/-/pubsub-0.0.1-alpha.1.tgz}
+  registry.npmjs.org/@redchili/pubsub/0.0.1-alpha.2:
+    resolution: {integrity: sha512-KYVu+ZN4OLbEqYp7L5k6wCjmU4SMbLq2FgdKhUmM7WPmMFvxh95xGVsx1FDikG98kDL76R+2mpgIcbyBIev/lQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@redchili/pubsub/-/pubsub-0.0.1-alpha.2.tgz}
     name: '@redchili/pubsub'
-    version: 0.0.1-alpha.1
+    version: 0.0.1-alpha.2
     dependencies:
       nanoid: registry.npmjs.org/nanoid/3.3.4
     dev: false
