@@ -1,48 +1,27 @@
-# Name of workflow
-name: Main workflow
+name: Publish to NPM
 
-# When workflow is triggered
 on:
-  push:
-    branches:
-      - master
+  create:
 
-# Jobs to carry out
 jobs:
-  deploy:
-    # Operating system to run job on
+  version:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-        app-name: [react-nice-form]
-        include:
-          - app-name: react-nice-form
-            app: "react-nice-form"
-            app-dir: "pkg"
-            app-build: "pkg/dist"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v1
+      - run: echo "${{github.ref}}"
 
-      - name: Setup Node.js ${{matrix.node-version}}
-        uses: actions/setup-node@v2
+  publish:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v2
         with:
-          node-version: ${{matrix.node-version}}
+          node-version: "16.x"
           registry-url: "https://registry.npmjs.org"
-
-      - name: Install dependencies
-        run: |
-          node common/scripts/install-run-rush.js change -v
-          node common/scripts/install-run-rush.js install
-
-      - name: Build ${{ matrix.app-name }}
-        working-directory: ${{ matrix.app-dir }}
-        run: |
-          node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ matrix.app }}
-
-      - name: Publish ${{matrix.app-name}}
-        working-directory: ${{ matrix.app-dir }}
-        run: yarn publish --access public
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install
+      - run: yarn build
+      - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}} # 跟前面步骤中的 NPM_AUTH_TOKEN 保持一致

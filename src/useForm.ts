@@ -18,12 +18,12 @@ interface FormProps {
   effects?: EffectsAction;
 }
 
-export default function useForm({ effects }: FormProps) {
+export default function useForm(props?: FormProps) {
   const valuesRef = useRef<any>(undefined);
   const hideFieldSRef = useRef<string[]>([]);
   const errorsRef = useRef<any>();
   const rulesRef = useRef<{ [k: string]: RuleType }>();
-  const effectsRef = useRef<EffectsAction | undefined>(effects);
+  const effectsRef = useRef<EffectsAction | undefined>(props?.effects);
   useEffect(() => {
     pubSub.subscribe("change", subscriber, (field) => {
       // NOTE: 存储值
