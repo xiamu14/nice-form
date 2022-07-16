@@ -42,7 +42,7 @@ export default function useForm(props?: FormProps) {
       errorsRef.current = { ...(errorsRef.current || {}), ...error };
     });
     return () => {
-      pubSub.unsubscribeAll();
+      pubSub.unsubscribe();
     };
   }, []);
 
@@ -82,22 +82,22 @@ export default function useForm(props?: FormProps) {
       // TODO: 判断值是否都通过了校验，否则校验遗漏值；没有通过校验，触发消息给对应的 field
       // TODO: 校验是否都通过了
       let valid = true;
-      console.log(
-        "%c debug",
-        "color:white;background: rgb(83,143,204);padding:4px",
-        rulesRef.current,
-        valuesRef.current
+      // console.log(
+      //   "%c debug",
+      //   "color:white;background: rgb(83,143,204);padding:4px",
+      //   rulesRef.current,
+      //   valuesRef.current
+      // );
+      const currentValue = filterObject(
+        valuesRef.current,
+        hideFieldSRef.current
       );
       if (rulesRef.current) {
-        const currentValue = filterObject(
-          valuesRef.current,
-          hideFieldSRef.current
-        );
-        console.log(
-          "%c debug current",
-          "color:white;background: rgb(83,143,204);padding:4px",
-          currentValue
-        );
+        // console.log(
+        //   "%c debug current",
+        //   "color:white;background: rgb(83,143,204);padding:4px",
+        //   currentValue
+        // );
         Object.keys(rulesRef.current).forEach((key) => {
           const verify = rulesRef.current?.[key];
 
@@ -111,7 +111,7 @@ export default function useForm(props?: FormProps) {
         });
         return valid ? currentValue : undefined;
       }
-      return undefined;
+      return currentValue;
     },
   };
 
