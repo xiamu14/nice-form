@@ -41,8 +41,7 @@ const Item = (props: React.PropsWithChildren<Props>) => {
     visibleRef.current = visible;
   }, [visible]);
 
-  const handleChange = (name: string, event: InputEvent | any) => {
-    const value = event.target.value;
+  const handleChange = (name: string, value: any) => {
     setValue(value);
     pubsub.publish("change", { [name]: value });
   };
@@ -123,11 +122,6 @@ const Item = (props: React.PropsWithChildren<Props>) => {
       };
 
       if (name in startValues) {
-        console.log(
-          "%c debug startValues",
-          "background: #69c0ff; color: white; padding: 4px",
-          startValues
-        );
         setValue(startValues[name]);
       }
     }
