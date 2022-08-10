@@ -12,7 +12,9 @@
 
 ## 上手案例
 
-构建一个简单的登录表单组件
+构建一个简单的登录表单组件。
+
+![login form](https://assets-phi.vercel.app/-/react-nice-form/1.png)
 
 ```tsx
 import { Form, Item, useForm } from "react-nice-form";
@@ -41,7 +43,7 @@ const LoginForm = () => {
             label="Nickname"
           />
         </Item>
-        ,<Item name="email">
+        <Item name="email">
           <CustomInput
             clearable
             bordered
@@ -87,7 +89,7 @@ const CustomInput = ({ onChange, value, ...restProps }: Props) => {
 export default CustomInput;
 ```
 
-最终效果 [codesandbox](https://codesandbox.io/s/eager-driscoll-fr4hw1?file=/src/components/custom_input/index.tsx:0-419)
+真实效果点击 [demo](https://codesandbox.io/s/eager-driscoll-fr4hw1?file=/src/components/custom_input/index.tsx:0-419)。
 
 ## 基础组件
 
