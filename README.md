@@ -22,7 +22,7 @@
 
 构建一个简单的登录表单组件。
 
-<img width="500" src="https://assets-phi.vercel.app/-/react-nice-form/1.png" alt='login form/>
+<img width="500" src="https://assets-phi.vercel.app/-/react-nice-form/1.png" alt="login form"/>
 
 ```tsx
 import { Form, Item, useForm } from "react-nice-form";
