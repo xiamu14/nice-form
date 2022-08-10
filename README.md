@@ -1,7 +1,7 @@
 # React Nice Form
 
 <p align="center">
-<img width="200" src="https://assets-phi.vercel.app/-/react-nice-form/logo.png"/>
+<img width="100" src="https://assets-phi.vercel.app/-/react-nice-form/logo.png"/>
 </P>
 
 <p align="center">
