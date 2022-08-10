@@ -1,6 +1,6 @@
 # React Nice Form
 
-![LOGO]('https://assets-phi.vercel.app/-/react-nice-form/logo.png')
+![LOGO](https://assets-phi.vercel.app/-/react-nice-form/logo.png){:height="100px" width="100px"}
 
 ## 简介
 
