@@ -4,6 +4,12 @@
 <img width="200" src="https://assets-phi.vercel.app/-/react-nice-form/logo.png"/>
 </P>
 
+<p align="center">
+ <img src="https://img.shields.io/badge/coverage-100%25-brightgreen">
+ <img src="https://img.shields.io/badge/min%20size-1%20kb-blue">
+ <img src="https://img.shields.io/npm/dt/react-nice-form.svg?colorB=ff69b4">
+ </p>
+
 ## 简介
 
 表单场景是前端开发中最常见的场景。
