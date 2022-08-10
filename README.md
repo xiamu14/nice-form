@@ -35,30 +35,29 @@ $ npm install --save react-nice-form
 
 构建一个简单的登录表单组件。
 
-<p align="center">
-<img width="500" src="https://assets-phi.vercel.app/-/react-nice-form/1.png" alt="login form" style="border:1px solid #fefefe;"/>
+<p align="center" style="border: 1px solid #dddddd;">
+<img width="500" src="https://assets-phi.vercel.app/-/react-nice-form/1.png" alt="login form"/>
 </p>
+
 ```tsx
 import { Form, Item, useForm } from "react-nice-form";
 import { Button, Spacer } from "@nextui-org/react";
 import CustomInput from "../custom_input";
 
 const LoginForm = () => {
-const { form } = useForm();
+  const { form } = useForm();
 
-const handleSubmit = () => {
-const values = form.submit();
+  const handleSubmit = () => {
+    const values = form.submit();
 
     console.log(values);
+  };
 
-};
-
-return (
-
-<div>
-<Form form={form}>
-<Item name="nickname">
-<CustomInput
+  return (
+    <div>
+      <Form form={form}>
+        <Item name="nickname">
+          <CustomInput
             clearable
             bordered
             fullWidth
@@ -66,9 +65,9 @@ return (
             size="lg"
             label="Nickname"
           />
-</Item>
-<Item name="email">
-<CustomInput
+        </Item>
+        <Item name="email">
+          <CustomInput
             clearable
             bordered
             fullWidth
@@ -76,19 +75,18 @@ return (
             size="lg"
             label="Email"
           />
-</Item>
-</Form>
-<Spacer />
-<Button auto onClick={handleSubmit}>
-Submit
-</Button>
-</div>
-);
+        </Item>
+      </Form>
+      <Spacer />
+      <Button auto onClick={handleSubmit}>
+        Submit
+      </Button>
+    </div>
+  );
 };
 
 export default LoginForm;
-
-````
+```
 
 `custom_input.tsx` 代码如下：
 
@@ -112,7 +110,7 @@ const CustomInput = ({ onChange, value, ...restProps }: Props) => {
 };
 
 export default CustomInput;
-````
+```
 
 真实效果点击 [demo](https://codesandbox.io/s/eager-driscoll-fr4hw1?file=/src/components/custom_input/index.tsx:0-419)。
 
