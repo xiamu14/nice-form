@@ -1,6 +1,6 @@
 # React Nice Form
 
-![LOGO]('https://assets-phi.vercel.app/-/react-nice-form/logo.svg')
+![LOGO]('https://assets-phi.vercel.app/-/react-nice-form/logo.png')
 
 ## 简介
 
