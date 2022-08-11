@@ -175,7 +175,7 @@ export interface FormType {
 
 校验方式支持正则，required，函数三种类型。在 Item 里设置校验方式和校验触发时机，当校验未通过时，输入组件可以同从 props 的 error 参数里获取到错误信息，用于提示。案例代码如下:
 
-```
+```tsx
 ...
 <Item name="nickname" rule={{ required: "Please input Nickname" }}>
   <CustomInput
