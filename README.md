@@ -18,6 +18,13 @@
 
 而这些逻辑浏览器只提供了基础的 API ，因此，原生开发有大量的样板代码来处理。`React Nice Form` 就是简化表单开发的利器。
 
+特点：
+
+- 减少样板代码
+- 避免 React re-render
+- 快捷的设置校验和联动
+- 灵活自定义输入组件
+
 ## 安装
 
 ```
@@ -95,17 +102,21 @@ import { Input, InputProps } from "@nextui-org/react";
 
 interface Props extends Partial<Omit<InputProps, "onChange">> {
   onChange?: (value: string) => void;
+  error?: string;
 }
 
 const CustomInput = ({ onChange, value, ...restProps }: Props) => {
   return (
-    <Input
-      {...restProps}
-      value={value ?? ""}
-      onChange={(e) => {
-        onChange?.(e.currentTarget.value);
-      }}
-    />
+    <div>
+      <Input
+        {...restProps}
+        value={value ?? ""}
+        onChange={(e) => {
+          onChange?.(e.currentTarget.value);
+        }}
+      />
+      {error}
+    </div>
   );
 };
 
@@ -162,16 +173,65 @@ export interface FormType {
 
 ### validator 校验
 
+校验方式支持正则，required，函数三种类型。在 Item 里设置校验方式和校验触发时机，当校验未通过时，输入组件可以同从 props 的 error 参数里获取到错误信息，用于提示。案例代码如下:
+
+```
+...
+<Item name="nickname" rule={{ required: "Please input Nickname" }}>
+  <CustomInput
+    clearable
+    bordered
+    fullWidth
+    color="primary"
+    size="lg"
+    label="Nickname"
+  />
+</Item>
+...
+```
+
+当输入组件校验没有全部通过时， form.submit 将无法提交，submit 函数返回 `undefined`。
+
 ### 复杂联动
+
+输入组件间的联动目前只支持比较简单的监听输入事件时改变其他输入组件的状态（包括 value，hide/show，props）。Form 生命周期的监听事件在计划开发中。
+
+将 nickname 的输入同时设置为 email 的输入，具体实现代码如下：
+
+```tsx
+...
+const { form } = useForm({
+  effects: ({ onValueChange, setState }) => {
+    onValueChange("nickname", ({ value }: any) => { // 监听 nickname 变动
+      setState("email", { value }); // 设置为 email 的 value
+    });
+  }
+});
+```
 
 ### 自定义输入
 
-#### 异步数据源
+`React-Nice-Form` 很容易连接自定义的输入组件，只要输入组件的 props 定义 `value`, `onChange` 属性即可。
 
-#### 自增列表
+参考`上手案例`里的 `custom_input.tsx`。
+
+因此，一些复杂的自增输入组件，完全由输入组件本身控制自增逻辑，复用率更高。
 
 ### 使用第三方组件
+
+上手案例里使用的是 NextUI 组件库的 Input，举一反三，类似 Antd Design 等 UI 库，都可以简单封装后使用。
 
 ### 注意事项
 
 #### initialValues , defaultValues 差异
+
+- initialValues 是表单的初始值，所有必填输入组件都必须有值。常用于表单编辑初始化时传入，支持异步数据。
+- defaultValues 是表单部分输入组件的默认设置值，比如使用当前时间，当前地址作为默认值。
+- initialValues 的优先级高于 defaultValues，当两者同时设置时，使用 initialValues。
+- form.reset 调用后，表单目前恢复是到 defaultValues。（后续计划可以灵活调整 reset 恢复的状态值）
+
+### TODO
+
+- [ ] 联动监听 Form 生命周期事件
+- [ ] reset 可以自由设置恢复到 initialValues 还是 defaultValues
+- [ ] submit 后，如果校验未通过，返回所有字段的错误信息
