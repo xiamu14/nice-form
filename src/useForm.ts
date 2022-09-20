@@ -20,7 +20,7 @@ interface FormProps {
 
 export default function useForm(props?: FormProps) {
   const valuesRef = useRef<any>(undefined);
-  const hideFieldSRef = useRef<string[]>([]);
+  const hideFieldSRef = useRef<Set<string>>(new Set());
   const errorsRef = useRef<any>();
   const rulesRef = useRef<{ [k: string]: RuleType }>();
   const effectsRef = useRef<EffectsAction | undefined>(props?.effects);
@@ -31,12 +31,11 @@ export default function useForm(props?: FormProps) {
     });
     pubSub.subscribe("hide", subscriber, (fieldName: string) => {
       // NOTE: 隐藏值
-      hideFieldSRef.current = [...hideFieldSRef.current, fieldName];
+      hideFieldSRef.current.add(fieldName);
     });
     pubSub.subscribe("show", subscriber, (fieldName: string) => {
       // NOTE: 消失值
-      const index = hideFieldSRef.current.indexOf(fieldName);
-      hideFieldSRef.current = hideFieldSRef.current.splice(index, 1);
+      hideFieldSRef.current.delete(fieldName);
     });
     pubSub.subscribe("verify", subscriber, (error) => {
       errorsRef.current = { ...(errorsRef.current || {}), ...error };
@@ -82,12 +81,12 @@ export default function useForm(props?: FormProps) {
       // TODO: 判断值是否都通过了校验，否则校验遗漏值；没有通过校验，触发消息给对应的 field
       // TODO: 校验是否都通过了
       let valid = true;
-      // console.log(
-      //   "%c debug",
-      //   "color:white;background: rgb(83,143,204);padding:4px",
-      //   rulesRef.current,
-      //   valuesRef.current
-      // );
+      console.log(
+        "%c debug",
+        "color:white;background: rgb(83,143,204);padding:4px",
+        hideFieldSRef.current,
+        valuesRef.current
+      );
       const currentValue = filterObject(
         valuesRef.current,
         hideFieldSRef.current
@@ -120,7 +119,7 @@ export default function useForm(props?: FormProps) {
   return { form: formRef.current };
 }
 
-function filterObject(value: Record<string, any>, keys: string[]) {
+function filterObject(value: Record<string, any>, keys: Set<string>) {
   const cloneValue = { ...value };
   keys.forEach((key) => {
     if (key in cloneValue) {
