@@ -17,7 +17,7 @@ const Form = React.memo(
     const defaultValuesRef = useRef(defaultValues ?? {});
     const formRef = useRef(form);
 
-    const setFieldRules = useCallback((rule) => {
+    const setFieldRules = useCallback((rule: any) => {
       formRef.current.setRules(rule);
     }, []);
 
