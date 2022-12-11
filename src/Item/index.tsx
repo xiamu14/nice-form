@@ -11,6 +11,9 @@ import { FieldStateType, RuleType, VerifyOnType } from "../types";
 import pubsub from "../utils/pubsub";
 import { verifyUtil } from "../utils/verify";
 
+export type FieldChildType<T extends Object> = React.MemoExoticComponent<
+  (params: { value: any; onChange: (value: any) => void } | T) => JSX.Element
+>;
 interface Props {
   name: string;
   rule?: RuleType;
