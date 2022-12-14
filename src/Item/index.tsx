@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -11,9 +12,6 @@ import { FieldStateType, RuleType, VerifyOnType } from "../types";
 import pubsub from "../utils/pubsub";
 import { verifyUtil } from "../utils/verify";
 
-export type FieldChildType<T extends Object> = React.MemoExoticComponent<
-  (params: { value: any; onChange: (value: any) => void } | T) => JSX.Element
->;
 interface Props {
   name: string;
   rule?: RuleType;
@@ -54,17 +52,31 @@ const Item = (props: React.PropsWithChildren<Props>) => {
       if (rule) {
         // TODO: 这里做校验
         const result = verifyUtil(rule, value);
-        console.log("debug verify", name, result);
+        // console.log("debug verify", name, result);
         result.valid ? setError(undefined) : setError(result.message);
       }
     },
+
     [value]
   );
 
+  const startValues = useMemo(() => {
+    return {
+      ...(context?.defaultValues ?? {}),
+      ...(context?.initialValues ?? {}),
+    };
+  }, [context]);
+
+  useEffect(() => {
+    if (name in startValues) {
+      setValue(startValues[name]);
+    }
+  }, [context]);
+
   useEffect(() => {
     pubsub.subscribe("reset", subscribe, () => {
-      if (name in context.defaultValues) {
-        setValue(context.defaultValues[name]);
+      if (name in startValues) {
+        setValue(startValues[name]);
       } else {
         setValue(undefined);
       }
@@ -117,19 +129,6 @@ const Item = (props: React.PropsWithChildren<Props>) => {
     }
   }, [context, rule]);
 
-  useEffect(() => {
-    if (context) {
-      const startValues = {
-        ...context.defaultValues,
-        ...context.initialValues,
-      };
-
-      if (name in startValues) {
-        setValue(startValues[name]);
-      }
-    }
-  }, [context]);
-
   const bind = useCallback(
     (child: React.ReactNode) => {
       if (!React.isValidElement(child)) {
@@ -147,9 +146,6 @@ const Item = (props: React.PropsWithChildren<Props>) => {
           },
           onBlur: () => {
             verifyOnRef.current === "blur" && verify(nameRef.current);
-            if ("onBlur" in child.props) {
-              child.props.onBlur();
-            }
           },
         },
         // style: {

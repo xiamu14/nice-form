@@ -2,7 +2,6 @@
   "name": "react-nice-form",
   "version": "0.1.4-beta.0",
   "description": "",
-  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.js"

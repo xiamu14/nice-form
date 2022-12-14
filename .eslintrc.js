@@ -7,10 +7,11 @@ module.exports = {
     // node: true,
     // mocha: true,
     // jest: true,
-    // jquery: true
+    // jquery: true,
     jest: true,
   },
   globals: {
+    JSX: true,
     // 你的全局变量（设置为 false 表示它不允许被重新赋值）
     //
     // myGlobal: false

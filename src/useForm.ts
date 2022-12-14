@@ -10,7 +10,14 @@ type EffectsAction = ({
   onValueChange,
   setState,
 }: {
-  onValueChange: (name: string, callback: any) => void;
+  onValueChange: (
+    name: string | string[],
+    callback: (data: {
+      key: string;
+      value: any;
+      values: Record<string, any>;
+    }) => void
+  ) => void;
   setState: (name: string, fieldState: FieldStateType) => void;
 }) => void;
 
@@ -46,12 +53,26 @@ export default function useForm(props?: FormProps) {
   }, []);
 
   const onValueChange = useCallback(
-    (name: string, callback: (data: { value: any }) => void) => {
-      pubSub.subscribe(
-        "onValueChange",
-        subscriber,
-        (data) => name === data.key && callback(data.data)
-      );
+    (
+      name: string | string[],
+      callback: (data: {
+        key: string;
+        value: any;
+        values: Record<string, any>;
+      }) => void
+    ) => {
+      let keys: string[] = [];
+      if (typeof name === "string") {
+        keys = [name];
+      } else {
+        keys = name;
+      }
+      keys.forEach((key) => {
+        pubSub.subscribe("onValueChange", subscriber, (data) => {
+          const values = filterObject(valuesRef.current, hideFieldSRef.current);
+          key === data.key && callback({ key, value: data.data.value, values });
+        });
+      });
     },
     []
   );
@@ -81,12 +102,12 @@ export default function useForm(props?: FormProps) {
       // TODO: 判断值是否都通过了校验，否则校验遗漏值；没有通过校验，触发消息给对应的 field
       // TODO: 校验是否都通过了
       let valid = true;
-      console.log(
-        "%c debug",
-        "color:white;background: rgb(83,143,204);padding:4px",
-        hideFieldSRef.current,
-        valuesRef.current
-      );
+      // console.log(
+      //   "%c debug",
+      //   "color:white;background: rgb(83,143,204);padding:4px",
+      //   hideFieldSRef.current,
+      //   valuesRef.current
+      // );
       const currentValue = filterObject(
         valuesRef.current,
         hideFieldSRef.current

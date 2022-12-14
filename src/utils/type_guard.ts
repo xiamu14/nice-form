@@ -13,3 +13,7 @@ export function isFunction(value: any): value is Function {
 export function isObject(value: any): value is Object {
   return Object.prototype.toString.call(value) === "[object Object]";
 }
+
+export function isArray<T>(value: any): value is Array<T> {
+  return Array.isArray(value);
+}
