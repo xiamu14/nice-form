@@ -21,11 +21,6 @@
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "@redchili/pubsub": "0.0.1-alpha.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "dependencies": {
     "@redchili/pubsub": "0.0.1-alpha.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
