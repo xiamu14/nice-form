@@ -1,6 +1,6 @@
 import { Subscriber } from "@redchili/pubsub";
 import { useCallback, useEffect, useRef } from "react";
-import { FieldStateType, FormType, RuleType } from "./types";
+import { FieldStateType, ValuesType, FormType, RuleType } from "./types";
 import pubSub from "./utils/pubsub";
 import { verifyUtil } from "./utils/verify";
 
@@ -25,8 +25,8 @@ interface FormProps {
   effects?: EffectsAction;
 }
 
-export default function useForm(props?: FormProps) {
-  const valuesRef = useRef<any>(undefined);
+export default function useForm<T extends ValuesType>(props?: FormProps) {
+  const valuesRef = useRef<ValuesType | undefined>(undefined);
   const hideFieldSRef = useRef<Set<string>>(new Set());
   const errorsRef = useRef<any>();
   const rulesRef = useRef<{ [k: string]: RuleType }>();
@@ -69,7 +69,10 @@ export default function useForm(props?: FormProps) {
       }
       keys.forEach((key) => {
         pubSub.subscribe("onValueChange", subscriber, (data) => {
-          const values = filterObject(valuesRef.current, hideFieldSRef.current);
+          const values = filterObject(
+            valuesRef.current ?? {},
+            hideFieldSRef.current
+          );
           key === data.key && callback({ key, value: data.data.value, values });
         });
       });
@@ -98,7 +101,7 @@ export default function useForm(props?: FormProps) {
       // console.log("setRules", fieldRules);
       rulesRef.current = { ...rulesRef.current, ...fieldRules };
     },
-    submit: () => {
+    submit: (): T | undefined => {
       // TODO: 判断值是否都通过了校验，否则校验遗漏值；没有通过校验，触发消息给对应的 field
       // TODO: 校验是否都通过了
       let valid = true;
@@ -109,7 +112,7 @@ export default function useForm(props?: FormProps) {
       //   valuesRef.current
       // );
       const currentValue = filterObject(
-        valuesRef.current,
+        valuesRef.current ?? {},
         hideFieldSRef.current
       );
       if (rulesRef.current) {
@@ -129,9 +132,9 @@ export default function useForm(props?: FormProps) {
             setState(key, { error: result.message });
           }
         });
-        return valid ? currentValue : undefined;
+        return valid ? (currentValue as T) : undefined;
       }
-      return currentValue;
+      return currentValue as T;
     },
   };
 
@@ -140,7 +143,7 @@ export default function useForm(props?: FormProps) {
   return { form: formRef.current };
 }
 
-function filterObject(value: Record<string, any>, keys: Set<string>) {
+function filterObject(value: ValuesType, keys: Set<string>) {
   const cloneValue = { ...value };
   keys.forEach((key) => {
     if (key in cloneValue) {

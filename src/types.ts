@@ -11,6 +11,15 @@ export type RuleType =
 
 export type VerifyOnType = "blur" | "change";
 
+export type ValueType =
+  | string
+  | number
+  | boolean
+  | Record<string | number | symbol, unknown>
+  | unknown[];
+
+export type ValuesType = Record<string, ValueType>;
+
 export interface FieldStateType {
   value?: any;
   props?: Record<string, any>;

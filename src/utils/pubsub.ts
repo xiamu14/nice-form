@@ -1,14 +1,14 @@
 import PubSub from "@redchili/pubsub";
-import { FieldStateType } from "../types";
+import { FieldStateType, ValuesType } from "../types";
 
 interface EventType {
   reset: undefined;
-  change: Record<string, any>;
+  change: ValuesType;
   onValueChange: { key: string; data: { value: any } };
   setState: { key: string; fieldState: FieldStateType };
   show: string;
   hide: string;
-  verify: Record<string, any>;
+  verify: ValuesType;
 }
 
 const pubsub = new PubSub<EventType>();
