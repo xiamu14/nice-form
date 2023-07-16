@@ -27,13 +27,9 @@ export interface FieldStateType {
   error?: string;
 }
 
-export interface FormType {
+export interface FormType<T> {
   setState: (name: string, fieldState: FieldStateType) => void;
   reset: () => void;
   setRules: (fieldRules: { [k: string]: RuleType }) => void;
-  submit: () =>
-    | {
-        [x: string]: any;
-      }
-    | undefined;
+  submit: () => T;
 }

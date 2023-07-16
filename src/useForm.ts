@@ -26,7 +26,7 @@ interface FormProps {
 }
 
 export default function useForm<T extends ValuesType>(props?: FormProps) {
-  const valuesRef = useRef<ValuesType | undefined>(undefined);
+  const valuesRef = useRef<T | undefined>(undefined);
   const hideFieldSRef = useRef<Set<string>>(new Set());
   const errorsRef = useRef<any>();
   const rulesRef = useRef<{ [k: string]: RuleType }>();
@@ -34,7 +34,8 @@ export default function useForm<T extends ValuesType>(props?: FormProps) {
   useEffect(() => {
     pubSub.subscribe("change", subscriber, (field) => {
       // NOTE: 存储值
-      valuesRef.current = { ...(valuesRef.current || {}), ...field };
+      const result = { ...(valuesRef.current || {}), ...field };
+      valuesRef.current = result as T;
     });
     pubSub.subscribe("hide", subscriber, (fieldName: string) => {
       // NOTE: 隐藏值
@@ -91,7 +92,7 @@ export default function useForm<T extends ValuesType>(props?: FormProps) {
     });
   }, []);
 
-  const form: FormType = {
+  const form: FormType<T | undefined> = {
     // values: valuesRef.current,
     setState,
     reset: () => {
@@ -101,7 +102,7 @@ export default function useForm<T extends ValuesType>(props?: FormProps) {
       // console.log("setRules", fieldRules);
       rulesRef.current = { ...rulesRef.current, ...fieldRules };
     },
-    submit: (): T | undefined => {
+    submit() {
       // TODO: 判断值是否都通过了校验，否则校验遗漏值；没有通过校验，触发消息给对应的 field
       // TODO: 校验是否都通过了
       let valid = true;
@@ -114,7 +115,7 @@ export default function useForm<T extends ValuesType>(props?: FormProps) {
       const currentValue = filterObject(
         valuesRef.current ?? {},
         hideFieldSRef.current
-      );
+      ) as T;
       if (rulesRef.current) {
         // console.log(
         //   "%c debug current",
@@ -132,9 +133,9 @@ export default function useForm<T extends ValuesType>(props?: FormProps) {
             setState(key, { error: result.message });
           }
         });
-        return valid ? (currentValue as T) : undefined;
+        return valid ? currentValue : undefined;
       }
-      return currentValue as T;
+      return currentValue;
     },
   };
 
