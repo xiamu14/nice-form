@@ -12,11 +12,7 @@ type EffectsAction = ({
 }: {
   onValueChange: (
     name: string | string[],
-    callback: (data: {
-      key: string;
-      value: any;
-      values: Record<string, any>;
-    }) => void
+    callback: (data: { key: string; value: any; values: Record<string, any> }) => void,
   ) => void;
   setState: (name: string, fieldState: FieldStateType) => void;
 }) => void;
@@ -49,18 +45,14 @@ export default function useForm<T extends ValuesType>(props?: FormProps) {
       errorsRef.current = { ...(errorsRef.current || {}), ...error };
     });
     return () => {
-      pubSub.unsubscribe();
+      pubSub.unsubscribe(subscriber);
     };
   }, []);
 
   const onValueChange = useCallback(
     (
       name: string | string[],
-      callback: (data: {
-        key: string;
-        value: any;
-        values: Record<string, any>;
-      }) => void
+      callback: (data: { key: string; value: any; values: Record<string, any> }) => void,
     ) => {
       let keys: string[] = [];
       if (typeof name === "string") {
@@ -70,15 +62,12 @@ export default function useForm<T extends ValuesType>(props?: FormProps) {
       }
       keys.forEach((key) => {
         pubSub.subscribe("onValueChange", subscriber, (data) => {
-          const values = filterObject(
-            valuesRef.current ?? {},
-            hideFieldSRef.current
-          );
+          const values = filterObject(valuesRef.current ?? {}, hideFieldSRef.current);
           key === data.key && callback({ key, value: data.data.value, values });
         });
       });
     },
-    []
+    [],
   );
 
   const setState = useCallback((name: string, fieldState: FieldStateType) => {
@@ -112,10 +101,7 @@ export default function useForm<T extends ValuesType>(props?: FormProps) {
       //   hideFieldSRef.current,
       //   valuesRef.current
       // );
-      const currentValue = filterObject(
-        valuesRef.current ?? {},
-        hideFieldSRef.current
-      ) as T;
+      const currentValue = filterObject(valuesRef.current ?? {}, hideFieldSRef.current) as T;
       if (rulesRef.current) {
         // console.log(
         //   "%c debug current",

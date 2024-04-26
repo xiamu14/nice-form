@@ -1,12 +1,5 @@
 import { Subscriber } from "@redchili/pubsub";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import FormContext from "../context";
 import { FieldStateType, RuleType, VerifyOnType } from "../types";
 import pubsub from "../utils/pubsub";
@@ -52,12 +45,12 @@ const Item = (props: React.PropsWithChildren<Props>) => {
       if (rule) {
         // TODO: 这里做校验
         const result = verifyUtil(rule, value);
-        // console.log("debug verify", name, result);
+        console.log("debug verify", name, result);
         result.valid ? setError(undefined) : setError(result.message);
       }
     },
 
-    [value]
+    [value],
   );
 
   const startValues = useMemo(() => {
@@ -108,12 +101,12 @@ const Item = (props: React.PropsWithChildren<Props>) => {
             }
           }
         }
-      }
+      },
     );
     return () => {
-      pubsub.unsubscribe();
+      pubsub.unsubscribe(subscribe);
     };
-  }, [context]);
+  }, []);
 
   useEffect(() => {
     pubsub.publish("change", { [nameRef.current]: value });
@@ -154,7 +147,7 @@ const Item = (props: React.PropsWithChildren<Props>) => {
       };
       return visible ? React.cloneElement(child, childProps) : null;
     },
-    [value, error, handleChange, verify, visible]
+    [value, error, handleChange, verify, visible],
   );
 
   return <>{React.Children.map(children, bind)}</>;
